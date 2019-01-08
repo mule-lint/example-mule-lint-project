@@ -1,0 +1,9 @@
+version '0.0.1'
+
+element 'logger' hasAttribute 'category'
+
+element 'http:request' hasParent 'until-successful'
+
+element 'http:request' hasPriorSibling 'logger'
+
+element 'http:request' hasFollowingSibling 'logger'

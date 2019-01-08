@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:scripting="http://www.mulesoft.org/schema/mule/scripting"
+xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+xmlns:http="http://www.mulesoft.org/schema/mule/http"
+xmlns="http://www.mulesoft.org/schema/mule/core"
+xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+xmlns:spring="http://www.springframework.org/schema/beans"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mule/scripting/current/mule-scripting.xsd">
+
+    <http:request-config name="Request_Configuration" protocol="HTTPS" host="192.168.42.42" port="443" doc:name="HTTP Request Configuration" responseTimeout="${response.timeout}"/>
+
+    <expression-filter expression="#[message == null]" name="exceptionStopMessage" doc:name="Expression"/>
+    <expression-filter expression="#[sessionVars.updatePlanStatus !=true]" name="updatePlanStatusStop" doc:name="Expression" />
+
+    <catch-exception-strategy name="globalCatchExceptionStrategy">
+        <logger message="app=#[app.name] messageId=#[message.id] projectId=#[flowVars.projectSfdcId] flow=#[flow.name] caller=#[message.inboundProperties.toString()] exceptionInfo=#[exception.info] details=#[exception.message]  payload=#[exception.event.message.originalPayload] exceptionPayload=#[exception.event.message.payload]" level="ERROR" doc:name="Logger"/>
+		<filter ref="exceptionStopMessage" doc:name="Filter Reference"/>
+    </catch-exception-strategy>
+</mule>
